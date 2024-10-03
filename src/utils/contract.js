@@ -29,7 +29,7 @@ export const contractFuji = async() => {
         
         const contractReader = new ethers.Contract(
             "0x74711F56Feb0226CA1e12a014FC33CeD5d6C3147",
-            CustomDexSepolia.abi,
+            DexFuji.abi,
             signer
         );
         

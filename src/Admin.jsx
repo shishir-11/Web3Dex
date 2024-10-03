@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { senderAddressAmoy, senderAddressFuji,setCrossReceiverForAmoy,setCrossReceiverForFuji } from './utils/context';
+import { senderAddressAmoy, senderAddressFuji,setCrossReceiverForAmoy,setCrossReceiverForFuji,getContractOwnerAmoy } from './utils/context';
 
 
 
 const Admin = ({setCurrChain,currChain}) => {
     const [sepoliaLink,setSepoliaLink] = useState('');
     const [amoyLink,setAmoyLink] = useState('');
-    const [sepoliaReceiver,setSepoliaReceiver] = useState('');
+    const [fujiReceeiver,setFujiReceiver] = useState('');
     const [amoyReceiver,setAmoyReceiver] = useState('');
     
     async function setFujiSender() {
         const address = await senderAddressFuji();
         setSepoliaLink(address);
     }
+    useEffect(()=>{
+        async function getOwner() {
+            const own = await getContractOwnerAmoy()
+            console.log(own);
+            
+        }
+        getOwner();
+    },[])
 
     async function setAmoySender() {
         const address = await senderAddressAmoy();
@@ -20,7 +28,8 @@ const Admin = ({setCurrChain,currChain}) => {
     }
 
     async function setCrossReceiverAmoy(){
-        await setCrossReceiverForAmoy(sepoliaReceiver)        
+        console.log(fujiReceeiver);
+        await setCrossReceiverForAmoy(fujiReceeiver)        
     }
 
 
@@ -42,8 +51,8 @@ const Admin = ({setCurrChain,currChain}) => {
             <div className='receiver-address'>
                 <h1>Address for receiver</h1>
                 
-                <p>Give address for receiver on Sepolia</p>
-                <input placeholder='address' value={sepoliaReceiver} onChange={(e)=>setSepoliaReceiver(e.target.value)}></input>
+                <p>Give address for receiver on Fuji</p>
+                <input placeholder='address' value={fujiReceeiver} onChange={(e)=>setFujiReceiver(e.target.value)}></input>
                 <button onClick={setCrossReceiverAmoy}>Set</button>
 
                 <p>Give address for receiver on Amoy</p>

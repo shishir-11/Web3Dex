@@ -301,11 +301,30 @@ export async function setCrossReceiverForFuji(receiver){
 
 export async function setCrossReceiverForAmoy(receiver){
     try{
+        console.log(receiver);
+        
         const contractObj = await contractAmoy();
-        const funcNeeded = contractObj.getFunction("setReceiverCross");
-        await funcNeeded(receiver);
+        const funcNeeded = await contractObj.setReceiverCross(receiver);
+        funcNeeded.wait();
+        console.log(funcNeeded);
+        
     }catch(e){
         parseErrorMsg(e);
+    }
+}
+
+export async function sendTokenCrossAmoyToFuji(srcToken,destToken,amount) {
+    try{
+        const contractObj = await contractAmoy();
+        const data = await contractObj.swapTokenChainReceive(
+            srcToken,
+            destToken,
+            toWei(amount)
+        );
+        const receipt = await data.wait();
+        return receipt;
+    }catch (e){
+        return parseErrorMsg(e);;
     }
 }
 

@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import { ETH, POL, Token1, Token2, Token3, Token4 } from './utils/saleToken';
-import { getTokenAddressAmoy,getTokenAddressFuji, getTokenBalanceAmoy, getTokenBalanceFuji, hasvalidAllowanceAmoy,hasvalidAllowanceFuji, increaseAllowanceAmoy,increaseAllowanceFuji, swapEthToTokenAmoy,swapEthToTokenFuji,swapTokenToEthAmoy, swapTokenToEthFuji,swapTokenToTokenAmoy, swapTokenToTokenFuji } from './utils/context';
+import { getTokenAddressAmoy,getTokenAddressFuji, getTokenBalanceAmoy, getTokenBalanceFuji, hasvalidAllowanceAmoy,hasvalidAllowanceFuji, increaseAllowanceAmoy,increaseAllowanceFuji, swapEthToTokenAmoy,swapEthToTokenFuji,swapTokenToEthAmoy, swapTokenToEthFuji,swapTokenToTokenAmoy, swapTokenToTokenFuji,sendTokenCrossAmoyToFuji } from './utils/context';
 
 const Swap = ({userAddress,setCurrChain}) => {
     const [swapFrom, setSwapFrom] = useState('');
@@ -12,7 +12,7 @@ const Swap = ({userAddress,setCurrChain}) => {
     const [currCoinAddress, setCurrCoinAddress] = useState('');
     // List of options for the dropdown
     const [coins,setCoins] = useState([ETH,Token1,Token2,Token3,Token4,POL]);
-    const options = [ETH.name,Token1.name,Token2.name,Token3.name,Token4.name,POL.name];
+    const options = [Token3.name,Token4.name,POL.name];
     
     // Function to handle changes when selecting an option
     const handleSwapFrom = (event) => {
@@ -104,6 +104,21 @@ const Swap = ({userAddress,setCurrChain}) => {
                         await swapTokenToTokenFuji(swapFrom,swapTo,amount1);
                     }
             }
+        }else if(chain1==80002 && chain2==43113){
+            if(swapFrom=="Pol" || swapTo=="Eth"){
+                alert("swap between tokens allowed");
+                return;
+            }
+            const balance = await getTokenBalanceAmoy(swapFrom);
+            if(balance<amount1){
+                alert("Not enough tokens in your account");
+                return;
+            }
+            const res = await hasvalidAllowanceAmoy(userAddress,swapFrom,amount1);
+            if(!res){
+                await increaseAllowanceAmoy(swapFrom,amount1);
+            }
+            await sendTokenCrossAmoyToFuji(swapFrom,swapTo,amount1);
         }
     }
 
