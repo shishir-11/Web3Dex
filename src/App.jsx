@@ -17,7 +17,6 @@ function App() {
 
   return (
     <Router>
-      <h1>Hello</h1>
       <WalletConnect setWalletConnected={setWalletConnected} setUserAddress={setUserAddress} currChain={currChain} />
       <Routes>
         <Route
